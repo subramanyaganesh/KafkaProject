@@ -1,3 +1,6 @@
 com/kafka/KafkaProject/KafkaProjectApplication.class
-com/kafka/KafkaProject/KafkaConsumer.class
-com/kafka/KafkaProject/KafkaProducer.class
+com/kafka/KafkaProject/config/KafkaConsumerConfig.class
+com/kafka/KafkaProject/KafkaListenerMain.class
+com/kafka/KafkaProject/controller/Controller.class
+com/kafka/KafkaProject/config/KafkaTopicConfig.class
+com/kafka/KafkaProject/config/KafkaProducerConfig.class
