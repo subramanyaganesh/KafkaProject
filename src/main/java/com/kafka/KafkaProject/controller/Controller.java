@@ -2,18 +2,21 @@ package com.kafka.KafkaProject.controller;
 
 import com.kafka.KafkaProject.config.KafkaTopicConfig;
 import com.kafka.KafkaProject.services.KafkaDeleteData;
+import com.kafka.KafkaProject.services.KafkaListenerMain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
+
+    @Autowired
+    KafkaListenerMain kafkaListenerMain;
 
     @Autowired
     KafkaTemplate<String, String> kafkaTemplate;
@@ -25,12 +28,20 @@ public class Controller {
     KafkaDeleteData kafkaDeleteData;
 
     @PostMapping("/api/send")
-    public HttpEntity<String> send(@RequestBody String body ){
-        kafkaTemplate.send(kafkaTopicConfig.myFirst().name(),body);
+    public HttpEntity<String> send(@RequestBody String body) {
+        kafkaTemplate.send(kafkaTopicConfig.myFirst().name(), body);
         return new ResponseEntity<>("Successfully added data into Kafka!", HttpStatus.CREATED);
     }
+
     @DeleteMapping("/api/delete/{topicName}")
-    public void deleteTopics(@PathVariable String topicName){
+    public void deleteTopics(@PathVariable String topicName) {
         kafkaDeleteData.deleteTopic(kafkaTopicConfig.myFirst().name());
     }
+
+    @GetMapping("/api/get")
+    public ResponseEntity<List<String>> getMessage() {
+        return new ResponseEntity<>(kafkaListenerMain.consumedMessages, HttpStatus.OK);
+    }
+
+
 }
