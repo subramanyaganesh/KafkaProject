@@ -1,24 +1,47 @@
 package com.kafka.KafkaProject.services;
 
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
 public class KafkaListenerMain {
 
-    public final List<String> consumedMessages = new ArrayList<>();
+    public final List<String> googleListener = new ArrayList<>();
+    public final List<String> netflixListener = new ArrayList<>();
+
     @KafkaListener(
-            topics = "${kafka.topic}",
+            topics = "${kafka.topic.google}",
             groupId = "groupid"
+            //For consumers, the group.id property is essential. It identifies the consumer group to which a consumer belongs.
+            // Kafka uses consumer groups to manage partition assignment and offset tracking.
+            //Producers publish messages to Kafka topics without regard to consumer groups or partition assignment.
+            // They simply send messages to the specified topic(s) without any coordination with other producers or consumers.
     )
-    public void listen(String message) {
+    public void googleListener(String message) {
+
         // This method will be invoked when a message is received from the "myFirstTopic" Kafka topic.
-        System.out.println("Received message: " + message);
+        System.out.println("Listener 1:::Received message: " + message);
         // Further processing of the received message can be done here.
-        consumedMessages.add(message);
+        googleListener.add(message);
+    }
+
+    @KafkaListener(
+            topics = "${kafka.topic.netflix}",
+            groupId = "groupid"
+            //For consumers, the group.id property is essential. It identifies the consumer group to which a consumer belongs.
+            // Kafka uses consumer groups to manage partition assignment and offset tracking.
+            //Producers publish messages to Kafka topics without regard to consumer groups or partition assignment.
+            // They simply send messages to the specified topic(s) without any coordination with other producers or consumers.
+    )
+    public void netflixListener(String message) {
+
+        // This method will be invoked when a message is received from the "myFirstTopic" Kafka topic.
+        System.out.println("Listener 2:::Received message: " + message);
+        // Further processing of the received message can be done here.
+        netflixListener.add(message);
     }
 
 }

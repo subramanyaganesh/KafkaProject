@@ -18,6 +18,7 @@ public class KafkaProducerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     public String bootstrapServer;
 
+
     public Map<String, Object> producerConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
@@ -26,15 +27,15 @@ public class KafkaProducerConfig {
         return props;
     }
 
-    //now to create a producer factory which creates producer instances using the above configs
-    @Bean //this is used to instantiate this function
 
+    @Bean
     public ProducerFactory<String, String> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
     //now that we have the producer factory we need a way to send messages
     //this is done using kafka templates
+
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate(ProducerFactory<String, String> producerFactory) {
         return new KafkaTemplate<>(producerFactory);

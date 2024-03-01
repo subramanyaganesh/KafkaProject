@@ -29,18 +29,18 @@ public class Controller {
 
     @PostMapping("/api/send")
     public HttpEntity<String> send(@RequestBody String body) {
-        kafkaTemplate.send(kafkaTopicConfig.myFirst().name(), body);
+        kafkaTemplate.send(kafkaTopicConfig.googleTopic().name(), body);
         return new ResponseEntity<>("Successfully added data into Kafka!", HttpStatus.CREATED);
     }
 
     @DeleteMapping("/api/delete/{topicName}")
     public void deleteTopics(@PathVariable String topicName) {
-        kafkaDeleteData.deleteTopic(kafkaTopicConfig.myFirst().name());
+        kafkaDeleteData.deleteTopic(kafkaTopicConfig.googleTopic().name());
     }
 
     @GetMapping("/api/get")
     public ResponseEntity<List<String>> getMessage() {
-        return new ResponseEntity<>(kafkaListenerMain.consumedMessages, HttpStatus.OK);
+        return new ResponseEntity<>(kafkaListenerMain.googleListener, HttpStatus.OK);
     }
 
 

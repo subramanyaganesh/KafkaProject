@@ -9,12 +9,12 @@ import org.springframework.kafka.config.TopicBuilder;
 @Configuration
 public class KafkaTopicConfig {
 
-    @Value("${kafka.topic}")
-    private String kafkaTopic;
+    @Value("${kafka.topic.google}")
+    private String google;
 
     @Bean
-    public NewTopic myFirst(){
-        return TopicBuilder.name(kafkaTopic).build();
+    public NewTopic googleTopic(){
+        return TopicBuilder.name(google).build();
     }
 
 }
