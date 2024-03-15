@@ -1,5 +1,8 @@
 from confluent_kafka import Consumer, KafkaError
 import matplotlib.pyplot as plt
+from elasticsearch import Elasticsearch, helpers
+
+es = Elasticsearch('http://localhost:9200')
 
 def consume_messages():
     conf = {
@@ -11,7 +14,7 @@ def consume_messages():
     consumer = Consumer(conf)
 
     # Subscribe to the Kafka topic
-    consumer.subscribe(['justchill11'])  
+    consumer.subscribe(['google'])  
 
     # Set up the initial plot
     x_values = []
@@ -21,7 +24,7 @@ def consume_messages():
     line, = ax.plot(x_values, y_values)
     ax.set_xlabel('Message Count')
     ax.set_ylabel('Float Value')
-    ax.set_title('Line Graph of Float Values from Kafka')
+    ax.set_title('The stock price of Google from Kafka')
     ax.grid(True)
 
     try:
@@ -41,6 +44,7 @@ def consume_messages():
             # Process the received message
             value = msg.value().decode('utf-8')  # Decode the message value
             print("Received message:", value)
+            es.index(index='google',document={'value':value})
             # Convert value to float (assuming it's a float value)
             float_value = float(value)
 
