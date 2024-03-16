@@ -1,8 +1,10 @@
 from confluent_kafka import Consumer, KafkaError
 import matplotlib.pyplot as plt
 from elasticsearch import Elasticsearch, helpers
+import json
 
-es = Elasticsearch('http://localhost:9200')
+es = Elasticsearch('http://localhost:9200',
+                   basic_auth=("elastic", "elasticsearch"))
 
 def consume_messages():
     conf = {
@@ -43,8 +45,10 @@ def consume_messages():
 
             # Process the received message
             value = msg.value().decode('utf-8')  # Decode the message value
-            print("Received message:", value)
-            es.index(index='netflix',document={'value':value})
+            json_value = json.loads(value)
+            value = json_value['values']
+            print("Received message:",value)
+            es.index(index='netflix',document={'value':value,'timestamp':json_value['date']})
             # Convert value to float (assuming it's a float value)
             float_value = float(value)
 

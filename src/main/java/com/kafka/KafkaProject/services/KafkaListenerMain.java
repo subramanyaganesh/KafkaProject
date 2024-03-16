@@ -1,5 +1,8 @@
 package com.kafka.KafkaProject.services;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.kafka.KafkaProject.Model.ModelWorker;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +14,7 @@ public class KafkaListenerMain {
 
     public final List<String> googleListener = new ArrayList<>();
     public final List<String> netflixListener = new ArrayList<>();
-
+    Gson gson = new GsonBuilder().setPrettyPrinting().create();
     @KafkaListener(
             topics = "${kafka.topic.google}",
             groupId = "groupid"
@@ -23,7 +26,7 @@ public class KafkaListenerMain {
     public void googleListener(String message) {
 
         // This method will be invoked when a message is received from the "myFirstTopic" Kafka topic.
-        System.out.println("Listener 1:::Received message: " + message);
+        System.out.println("Listener 1:::Received message: " + gson.fromJson(message, ModelWorker.class).getValues());
         // Further processing of the received message can be done here.
         googleListener.add(message);
     }
@@ -39,7 +42,7 @@ public class KafkaListenerMain {
     public void netflixListener(String message) {
 
         // This method will be invoked when a message is received from the "myFirstTopic" Kafka topic.
-        System.out.println("Listener 2:::Received message: " + message);
+        System.out.println("Listener 2:::Received message: " + gson.fromJson(message, ModelWorker.class).getValues());
         // Further processing of the received message can be done here.
         netflixListener.add(message);
     }

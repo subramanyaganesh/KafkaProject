@@ -1,6 +1,9 @@
 package com.kafka.KafkaProject;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.kafka.KafkaProject.Model.ModelWorker;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +12,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.text.DateFormat;
+import java.text.ParseException;
 
 @Configuration
 public class KafkaDataConfig {
@@ -22,12 +27,12 @@ public class KafkaDataConfig {
     @Bean
     CommandLineRunner commandLineRunner(KafkaTemplate<String, String> kafkaTemplate) {
         return args -> {
-
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
             try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/GoogleStock Price.csv"))) {
                 reader.lines()
                         .skip(1) // Skip header
-                        .map(line -> line.split(",")[2])
-                        .forEach(a ->kafkaTemplate.send(google, a));
+                        .map(line -> gson.toJson(new ModelWorker(line.split(",")[0], line.split(",")[2])))
+                        .forEach(a -> kafkaTemplate.send(google, a));
             } catch (Exception e) {
                 // Handle exceptions
                 e.printStackTrace();
@@ -37,8 +42,8 @@ public class KafkaDataConfig {
             try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/NFLX.csv"))) {
                 reader.lines()
                         .skip(1) // Skip header
-                        .map(line -> line.split(",")[2])
-                        .forEach(a ->kafkaTemplate.send(netflix, a));
+                        .map(line -> gson.toJson(new ModelWorker(line.split(",")[0], line.split(",")[2])))
+                        .forEach(a -> kafkaTemplate.send(netflix, a));
             } catch (Exception e) {
                 // Handle exceptions
                 e.printStackTrace();
